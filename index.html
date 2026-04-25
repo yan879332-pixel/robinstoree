@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robin Store - APK Premium</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1a0026, #4b0082);
+    color: white;
+}
+
+/* CONTAINER */
+.container {
+    max-width: 420px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+}
+
+/* PROFILE */
+.profile img {
+    width: 100px;
+    border-radius: 50%;
+    border: 3px solid #ff66cc;
+}
+
+h1 {
+    margin: 10px 0 5px;
+    text-shadow: 0 0 10px #ff66cc, 0 0 20px #ff66cc;
+}
+
+/* WELCOME */
+.welcome {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 102, 204, 0.1);
+    border: 1px solid #ff66cc;
+    font-size: 14px;
+    line-height: 1.6;
+    animation: fadeIn 1s ease-in;
+}
+
+.welcome span {
+    display: block;
+    margin-top: 5px;
+    color: #ff66cc;
+    font-weight: bold;
+    text-shadow: 0 0 8px #ff66cc;
+}
+
+/* ANIMASI */
+@keyframes fadeIn {
+    from {opacity: 0; transform: translateY(15px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+/* PRODUK */
+.product {
+    background: rgba(255,255,255,0.05);
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: left;
+}
+
+.product h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.price {
+    color: #ff66cc;
+    font-weight: bold;
+}
+
+button {
+    margin-top: 8px;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.add {
+    background: #ff66cc;
+    color: black;
+}
+
+/* CART */
+.cart {
+    background: #2b0a3d;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.remove {
+    background: red;
+    color: white;
+    padding: 4px 8px;
+    font-size: 12px;
+}
+
+.clear {
+    background: orange;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.checkout {
+    background: #25D366;
+    width: 100%;
+    margin-top: 10px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="profile">
+        <img src="https://i.pinimg.com/564x/8f/6d/9b/8f6d9b8b0d9f2a8b4c9e7e6d3b2a1c7f.jpg">
+        <h1>APK PREMIUM 👑</h1>
+
+        <!-- WELCOME BARU -->
+        <div class="welcome">
+            ✨ Selamat Datang di Robin Store 👑<br>
+            <span>🔥 APK Premium Murah • Aman • Bergaransi</span>
+        </div>
+    </div>
+
+    <!-- PRODUK -->
+    <div id="product-list"></div>
+
+    <!-- CART -->
+    <div class="cart">
+        <h2>🛒 Keranjang</h2>
+        <div id="cart-items"></div>
+        <p>Total: Rp <span id="total">0</span></p>
+
+        <button class="clear" onclick="clearCart()">🧹 Kosongkan Keranjang</button>
+        <button class="checkout" onclick="checkout()">Checkout WhatsApp</button>
+    </div>
+
+</div>
+
+<script>
+let products = [
+    {name: "Netflix Premium", price: 25000},
+    {name: "YouTube Premium", price: 15000},
+    {name: "Alight Motion Premium", price: 10000},
+    {name: "Canva Premium", price: 11000},
+    {name: "CapCut Premium", price: 17000}
+];
+
+let cart = [];
+
+function formatRupiah(angka) {
+    return angka.toLocaleString("id-ID");
+}
+
+function renderProducts() {
+    let html = "";
+    products.forEach((p, i) => {
+        html += `
+        <div class="product">
+            <h3>${p.name}</h3>
+            <div class="price">Rp ${formatRupiah(p.price)}</div>
+            <button class="add" onclick="addToCart(${i})">+ Keranjang</button>
+        </div>
+        `;
+    });
+    document.getElementById("product-list").innerHTML = html;
+}
+
+function addToCart(i) {
+    cart.push(products[i]);
+    renderCart();
+}
+
+function removeItem(index) {
+    cart.splice(index, 1);
+    renderCart();
+}
+
+function clearCart() {
+    cart = [];
+    renderCart();
+}
+
+function renderCart() {
+    let html = "";
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        html += `
+        <div class="cart-item">
+            <span>${item.name} - Rp ${formatRupiah(item.price)}</span>
+            <button class="remove" onclick="removeItem(${index})">X</button>
+        </div>
+        `;
+        total += item.price;
+    });
+
+    document.getElementById("cart-items").innerHTML = html;
+    document.getElementById("total").innerText = formatRupiah(total);
+}
+
+function checkout() {
+    if (cart.length === 0) {
+        alert("Keranjang kosong!");
+        return;
+    }
+
+    let pesan = "Halo Admin Robin Store 👑%0ASaya mau order:%0A";
+    let total = 0;
+
+    cart.forEach(item => {
+        pesan += `- ${item.name} (Rp ${formatRupiah(item.price)})%0A`;
+        total += item.price;
+    });
+
+    pesan += `%0ATotal: Rp ${formatRupiah(total)}%0ATerima kasih 🙌`;
+
+    window.open(`https://wa.me/84588895935?text=${pesan}`);
+}
+
+renderProducts();
+</script>
+
+</body>
+</html>
